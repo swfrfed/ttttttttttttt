@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С Днём Рождения, Полина!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --pink: #ff9ebc;
+            --light-pink: #ffc2d6;
+            --purple: #c8a2c8;
+            --light-purple: #e6d3e6;
+            --gold: #ffd700;
+            --white: #fff9fb;
+            --text: #5a3d5c;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fff1f8 0%, #f8f0ff 100%);
+            color: var(--text);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        h1, h2 {
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 4rem;
+            color: var(--pink);
+            margin-bottom: 20px;
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            color: var(--purple);
+            margin-bottom: 50px;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--pink), var(--purple));
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.2rem;
+            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(209, 77, 124, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--purple), var(--pink));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .btn:hover:before {
+            opacity: 1;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(209, 77, 124, 0.4);
+        }
+        
+        /* Прелоадер */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd1dc 0%, #e6c6e9 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .preloader h3 {
+            font-size: 2.5rem;
+            color: var(--pink);
+            margin-bottom: 30px;
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .preloader p {
+            font-size: 1.3rem;
+            color: var(--purple);
+            margin-top: 20px;
+        }
+        
+        .progress-container {
+            width: 300px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(to right, var(--pink), var(--purple));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        /* Главный блок (Hero) */
+        #hero {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 C50,100 50,100 100,0 L100,100 L0,100" fill="%23ffd1dc"/></svg>');
+            background-size: cover;
+            background-position: bottom;
+            background-repeat: no-repeat;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 3;
+        }
+        
+        .hearts-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23d14d7c" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.6;
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            color: var(--pink);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: bounce 2s infinite;
+            text-decoration: none;
+            z-index: 10;
+        }
+        
+        .scroll-down i {
+            font-size: 2rem;
+            margin-top: 10px;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+            40% {transform: translateY(-20px) translateX(-50%);}
+            60% {transform: translateY(-10px) translateX(-50%);}
+        }
+        
+        /* Секция с посланием */
+        #message {
+            background: linear-gradient(135deg, #f8f0ff 0%, #fff0f5 100%);
+        }
+        
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 900px;
+            position: relative;
+        }
+        
+        .photo-frame {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 10px solid white;
+            box-shadow: 0 20px 40px rgba(140, 80, 150, 0.25);
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .message-text {
+            background: white;
+            padding: 50px;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(140, 80, 150, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+        
+        .message-text:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--pink), var(--purple));
+        }
+        
+        .message-text p {
+            text-align: left;
+            margin-bottom: 25px;
+            font-size: 1.25rem;
+            line-height: 1.8;
+        }
+        
+        /* Фотогалерея */
+        #gallery {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 C30,120 70,50 100,100 L100,0 L0,0" fill="%23f0e6ff"/></svg>');
+            background-size: cover;
+            background-position: top;
+            background-repeat: no-repeat;
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+        
+        .gallery-item {
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            height: 320px;
+            box-shadow: 0 15px 35px rgba(140, 80, 150, 0.25);
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 50px rgba(140, 80, 150, 0.35);
+            z-index: 3;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 20px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            backdrop-filter: blur(5px);
+            color: var(--purple);
+        }
+        
+        .gallery-item:hover .caption {
+            transform: translateY(0);
+        }
+        
+        /* Цитаты */
+        #quotes {
+            background: linear-gradient(135deg, #fdf2ff 0%, #f8f0ff 100%);
+        }
+        
+        .quotes-container {
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            min-height: 250px;
+            perspective: 1000px;
+        }
+        
+        .quote {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(20px) rotateY(20deg);
+            transition: all 0.8s ease;
+            backface-visibility: hidden;
+        }
+        
+        .quote.active {
+            opacity: 1;
+            transform: translateY(0) rotateY(0);
+        }
+        
+        .quote h3 {
+            font-size: 3rem;
+            color: var(--pink);
+            margin-bottom: 20px;
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .quote p {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--purple);
+        }
+        
+        /* Финальный блок */
+        #final {
+            background: linear-gradient(135deg, #ffd1dc 0%, #e6c6e9 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .final-content {
+            position: relative;
+            z-index: 3;
+        }
+        
+        .gold-text {
+            color: var(--gold);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: 600;
+            font-size: 1.4rem;
+        }
+        
+        /* Анимированные элементы */
+        .floating {
+            position: absolute;
+            z-index: 1;
+            animation: floating 8s infinite ease-in-out;
+            pointer-events: none;
+        }
+        
+        .floating.star {
+            font-size: 2.5rem;
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .floating.heart {
+            font-size: 2rem;
+            color: var(--pink);
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+        }
+        
+        .floating.balloon {
+            font-size: 3.5rem;
+            color: var(--purple);
+            text-shadow: 0 0 10px rgba(200, 162, 200, 0.3);
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        /* Лепестки */
+        .petal {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: var(--pink);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0.7;
+            animation: fall linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+        
+        /* Адаптация для мобильных */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 1.1rem;
+            }
+            
+            .message-text {
+                padding: 30px 20px;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quote h3 {
+                font-size: 2.5rem;
+            }
+            
+            .quote p {
+                font-size: 1.3rem;
+            }
+            
+            .photo-frame {
+                width: 220px;
+                height: 220px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+            
+            .gallery-item {
+                height: 250px;
+            }
+        }
+        
+        /* Специальные символы */
+        .special-icon {
+            font-size: 1.8rem;
+            vertical-align: middle;
+            margin: 0 8px;
+        }
+        
+        /* Canvas для конфетти */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- Прелоадер -->
+    <div class="preloader">
+        <h3>Загружается... Подожди немного 💖</h3>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p>🐱 Потерпи, котик…</p>
+    </div>
+    
+    <!-- Главный блок (Hero) -->
+    <section id="hero">
+        <div class="hearts-container" id="hearts-container"></div>
+        <div class="hero-content container">
+            <h1>С Днём Рождения, Полина!</h1>
+            <h2>Тебе сегодня 15 — ты сияешь как никогда! ✨</h2>
+            <p>Этот день особенный, ведь он твой! Пусть он будет наполнен радостью, смехом и самыми прекрасными моментами. Ты заслуживаешь всего самого лучшего!</p>
+        </div>
+        <a href="#message" class="scroll-down">
+            Прокрутить вниз
+            <i>⬇</i>
+        </a>
+    </section>
+    
+    <!-- Секция с посланием -->
+    <section id="message">
+        <div class="petals-container" id="petals-container"></div>
+        <div class="container">
+            <div class="message-content">
+                <div class="photo-frame">
+                    <img src="101.jpg" alt="Полина">
+                </div>
+                <div class="message-text">
+                    <p>Дорогая Полина,</p>
+                    <p>В этот чудесный день я хочу сказать тебе самые тёплые слова! Ты — невероятный человек, который приносит столько света и радости в жизнь окружающих.</p>
+                    <p>Твоя улыбка способна осветить даже самый хмурый день, твоя доброта и чуткость делают мир лучше. Ты умеешь слушать, поддерживать и вдохновлять.</p>
+                    <p>Помни, что ты уникальна и особенная. У тебя столько талантов, столько потенциала! Верь в себя, иди к своим мечтам и никогда не сомневайся в своих силах.</p>
+                    <p>Спасибо, что ты есть в этом мире. Ты делаешь его ярче и прекраснее!</p>
+                    <p>С любовью,</p>
+                    <p class="gold-text">Тот, кто тебя очень ценит</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Фотогалерея -->
+    <section id="gallery">
+        <div class="container">
+            <h2>Наши памятные моменты</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="102.jpg" alt="Волшебный день в парке">
+                    <div class="caption">НЯЯЯ</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="103.jpg" alt="Празднование Нового года">
+                    <div class="caption">БУУУУ</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="104.jpg" alt="Летнее приключение">
+                    <div class="caption">Летнее приключение</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    
+    
+    <!-- Финальный блок -->
+    <section id="final">
+        <div class="container">
+            <div class="final-content">
+                <h1>Полина, ты — чудо! ✨</h1>
+                <p class="gold-text">Ты заслуживаешь весь мир и все самые прекрасные вещи в жизни.</p>
+                <p>Пусть этот год принесёт тебе море счастья, новых открытий и исполнения самых заветных желаний!</p>
+                <button class="btn" id="love-btn">Отправить тебе мою любовь</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Canvas для конфетти -->
+    <canvas id="confetti-canvas"></canvas>
+    
+    <!-- Скрипты -->
+    <script>
+        // Прелоадер
+        document.addEventListener('DOMContentLoaded', function() {
+            const preloader = document.querySelector('.preloader');
+            const progressBar = document.getElementById('progress-bar');
+            let progress = 0;
+            
+            // Анимация прогресс-бара
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Скрытие прелоадера
+                    setTimeout(() => {
+                        preloader.classList.add('hidden');
+                        document.body.style.overflow = 'auto';
+                        
+                        // Запуск эффектов после загрузки
+                        createHearts();
+                        createPetals();
+                        startFloatingElements();
+                        startQuotesRotation();
+                        initConfetti();
+                    }, 500);
+                }
+                progressBar.style.width = progress + '%';
+            }, 200);
+        });
+        
+        // Создание сердечек в Hero секции
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 40;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Случайная позиция
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                
+                // Случайный размер
+                const size = Math.random() * 25 + 15;
+                
+                // Случайная анимация
+                const duration = Math.random() * 6 + 4;
+                const delay = Math.random() * 5;
+                
+                heart.style.left = posX + '%';
+                heart.style.top = posY + '%';
+                heart.style.width = size + 'px';
+                heart.style.height = size + 'px';
+                heart.style.animation = `float ${duration}s infinite ${delay}s ease-in-out`;
+                heart.style.opacity = Math.random() * 0.5 + 0.3;
+                
+                container.appendChild(heart);
+            }
+        }
+        
+        // Создание лепестков
+        function createPetals() {
+            const container = document.getElementById('petals-container');
+            const petalCount = 30;
+            
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                
+                // Случайная позиция
+                const posX = Math.random() * 100;
+                
+                // Случайный размер
+                const size = Math.random() * 15 + 8;
+                
+                // Случайный цвет
+                const colors = ['#ff9ebc', '#ffc2d6', '#c8a2c8'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Случайная анимация
+                const duration = Math.random() * 15 + 10;
+                const delay = Math.random() * 5;
+                
+                petal.style.left = posX + '%';
+                petal.style.width = size + 'px';
+                petal.style.height = size + 'px';
+                petal.style.backgroundColor = color;
+                petal.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+                petal.style.opacity = Math.random() * 0.6 + 0.2;
+                
+                container.appendChild(petal);
+            }
+        }
+        
+        // Парящие элементы (звезды, сердечки, шарики)
+        function startFloatingElements() {
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const types = ['star', 'heart', 'balloon'];
+                
+                for (let i = 0; i < 8; i++) {
+                    const element = document.createElement('div');
+                    const type = types[Math.floor(Math.random() * types.length)];
+                    
+                    element.classList.add('floating', type);
+                    
+                    // Случайная позиция
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    
+                    element.style.left = posX + '%';
+                    element.style.top = posY + '%';
+                    
+                    // Случайная анимация
+                    const duration = Math.random() * 8 + 4;
+                    const delay = Math.random() * 5;
+                    
+                    element.style.animationDuration = duration + 's';
+                    element.style.animationDelay = delay + 's';
+                    
+                    // Установка символа
+                    if (type === 'star') element.innerHTML = '★';
+                    if (type === 'heart') element.innerHTML = '❤';
+                    if (type === 'balloon') element.innerHTML = '🎈';
+                    
+                    section.appendChild(element);
+                }
+            });
+        }
+        
+        // Вращение цитат
+        function startQuotesRotation() {
+            const quotes = document.querySelectorAll('.quote');
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                // Скрываем текущую цитату
+                quotes[currentIndex].classList.remove('active');
+                
+                // Переходим к следующей
+                currentIndex = (currentIndex + 1) % quotes.length;
+                
+                // Показываем следующую цитату
+                quotes[currentIndex].classList.add('active');
+            }, 3000);
+        }
+        
+        // Эффект конфетти
+        function initConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Установка размеров canvas
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            // Массив частиц конфетти
+            const confetti = [];
+            const confettiCount = 200;
+            const colors = ['#ff9ebc', '#c8a2c8', '#ffd700', '#ffb6c1', '#e0b0ff'];
+            const shapes = ['circle', 'square', 'heart'];
+            
+            // Создание частиц
+            for (let i = 0; i < confettiCount; i++) {
+                confetti.push({
+                    x: Math.random() * canvas.width,
+                    y: -20,
+                    radius: Math.random() * 12 + 5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speed: Math.random() * 4 + 2,
+                    rotation: Math.random() * 360,
+                    spin: (Math.random() - 0.5) * 12,
+                    shape: shapes[Math.floor(Math.random() * shapes.length)],
+                    size: Math.random() * 15 + 10
+                });
+            }
+            
+            // Функция отрисовки конфетти
+            function drawConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                confetti.forEach(particle => {
+                    ctx.save();
+                    ctx.translate(particle.x, particle.y);
+                    ctx.rotate(particle.rotation * Math.PI / 180);
+                    
+                    ctx.fillStyle = particle.color;
+                    
+                    if (particle.shape === 'circle') {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, particle.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (particle.shape === 'square') {
+                        ctx.fillRect(-particle.radius, -particle.radius, particle.radius*2, particle.radius*2);
+                    } else if (particle.shape === 'heart') {
+                        drawHeart(ctx, 0, 0, particle.radius);
+                    }
+                    
+                    ctx.restore();
+                    
+                    // Обновление позиции
+                    particle.y += particle.speed;
+                    particle.x += Math.sin(particle.y * 0.05) * 2;
+                    particle.rotation += particle.spin;
+                    
+                    // Если частица упала за пределы экрана, перемещаем её наверх
+                    if (particle.y > canvas.height) {
+                        particle.y = -20;
+                        particle.x = Math.random() * canvas.width;
+                        particle.rotation = Math.random() * 360;
+                    }
+                });
+                
+                requestAnimationFrame(drawConfetti);
+            }
+            
+            // Функция рисования сердца
+            function drawHeart(ctx, x, y, size) {
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.bezierCurveTo(
+                    x - size/2, y - size/2,
+                    x - size, y + size/3,
+                    x, y + size
+                );
+                ctx.bezierCurveTo(
+                    x + size, y + size/3,
+                    x + size/2, y - size/2,
+                    x, y
+                );
+                ctx.fill();
+            }
+            
+            drawConfetti();
+            
+            // Обработка изменения размера окна
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        }
+        
+        // Кнопка отправки любви
+        document.getElementById('love-btn').addEventListener('click', function() {
+            this.textContent = 'Любовь отправлена! 💖';
+            this.style.background = 'linear-gradient(45deg, #ffd700, #ffa500)';
+            this.style.boxShadow = '0 4px 15px rgba(255, 215, 0, 0.4)';
+            
+            // Анимация сердечек
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤';
+                    heart.style.position = 'fixed';
+                    heart.style.fontSize = Math.random() * 30 + 20 + 'px';
+                    heart.style.color = '#ff6b9d';
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.top = '100vh';
+                    heart.style.opacity = '0.8';
+                    heart.style.zIndex = '1000';
+                    heart.style.pointerEvents = 'none';
+                    heart.style.transform = 'translateY(0)';
+                    heart.style.animation = `flyHeart ${Math.random()*2+1}s ease-out forwards`;
+                    
+                    document.body.appendChild(heart);
+                    
+                    // Удаление сердечка после анимации
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 2000);
+                }, i * 100);
+            }
+            
+            // CSS для анимации сердечек
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes flyHeart {
+                    0% { transform: translateY(0) scale(1); opacity: 0.8; }
+                    100% { transform: translateY(-100vh) scale(0.2); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            setTimeout(() => {
+                this.textContent = 'Отправить тебе мою любовь';
+                this.style.background = 'linear-gradient(45deg, var(--pink), var(--purple))';
+                this.style.boxShadow = '0 4px 15px rgba(209, 77, 124, 0.3)';
+            }, 3000);
+        });
+        
+        // Плавная прокрутка
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
